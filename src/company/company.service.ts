@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException, UseGuards } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { Company } from './entities/company.entity';
@@ -7,6 +7,8 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt'
 import { LoginCompanyDto } from './dto/login_company.dto';
 import { JwtService } from '@nestjs/jwt';
+import { Request, Response } from 'express';
+import { CompanyGuard } from './company.guard';
 
 @Injectable()
 export class CompanyService {
@@ -36,7 +38,7 @@ export class CompanyService {
     return company;
   }
 
-  async companyLogin(loginCompanyDto: LoginCompanyDto, response){
+  async companyLogin(loginCompanyDto: LoginCompanyDto, response: Response): Promise<{message: string}>{
     const company = await this.findCompanyByEmail(loginCompanyDto.email);
     const password = bcrypt.compareSync(loginCompanyDto.password,company.password);
     if(!password){
@@ -45,8 +47,16 @@ export class CompanyService {
 
     const payload = {sub: company.id, email: company.contact_email };
     const access_token = await this.jwt.signAsync(payload);
-    return access_token;
 
+    response.cookie('jwt_token', access_token)
+    return {message: "Successfully Logged In"};
+  }
+
+  async companyLogout(response: Response){
+    response.clearCookie('jwt_token')
+    return {
+      message: "Company is Logged out successfully."
+    } 
   }
 
   async findAll() {

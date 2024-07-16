@@ -13,7 +13,7 @@ import { JwtContanst } from './company/constants';
       global: true,
       secret: JwtContanst.JWT_SECRET,
       signOptions: {
-        expiresIn: '1d'
+        expiresIn: '1d',
       }
     }),
     TypeOrmModule.forRoot({
