@@ -2,11 +2,11 @@ import { IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class CreateCompanyDto {
     @IsNotEmpty({message: "Name shouldn't be empty"})
-    @IsString({message: "Name should be a string}"})
+    @IsString({message: "Name should be a string"})
     name: string
 
     @IsNotEmpty({message: "Contact_email shouldn't be empty "})
-    @IsString({message: "Contact_email should be email"})
+    @IsString({message: "Contact_email should be string"})
     contact_email: string
 
     @IsNotEmpty()

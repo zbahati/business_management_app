@@ -1,26 +1,87 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
+import { Company } from './entities/company.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt'
+import { LoginCompanyDto } from './dto/login_company.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class CompanyService {
-  create(createCompanyDto: CreateCompanyDto) {
-    return 'This action adds a new company';
+  constructor(
+    @InjectRepository(Company)
+    private readonly companyRepository: Repository<Company>,
+    private readonly jwt: JwtService
+  ) { }
+
+  async companyRegistration(createCompanyDto: CreateCompanyDto) {
+
+     await this.findCompany(createCompanyDto.name, createCompanyDto.contact_email);
+
+    const hash = bcrypt.hashSync(createCompanyDto.password, 10);
+    const newCompany = new Company({ ...createCompanyDto, password: hash });
+
+    if (!newCompany) {
+      throw new BadRequestException();
+    }
+
+    const company = await this.companyRepository.save(newCompany);
+
+    if (!company) {
+      throw new HttpException("Company is failed to be created, try again", HttpStatus.BAD_REQUEST)
+    }
+
+    return company;
   }
 
-  findAll() {
-    return `This action returns all company`;
+  async companyLogin(loginCompanyDto: LoginCompanyDto, response){
+    const company = await this.findCompanyByEmail(loginCompanyDto.email);
+    const password = bcrypt.compareSync(loginCompanyDto.password,company.password);
+    if(!password){
+      throw new NotFoundException("Company Password is Incorrect!.")
+    }
+
+    const payload = {sub: company.id, email: company.contact_email };
+    const access_token = await this.jwt.signAsync(payload);
+    return access_token;
+
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} company`;
+  async findAll() {
+    const companies = await this.companyRepository.find();
+    return companies;
   }
 
-  update(id: number, updateCompanyDto: UpdateCompanyDto) {
-    return `This action updates a #${id} company`;
+  async findCompanyByEmail(email: string){
+    const checkEmail = await this.companyRepository.findOne({
+      where: {
+        contact_email: email
+      }
+    })
+
+    if(!checkEmail){
+      throw new NotFoundException("Company Email is unavailable")
+    }
+
+    return checkEmail;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} company`;
+
+  private async findCompany(name: string, email: string) {
+    const companyName = await this.companyRepository.findOne({
+      where: [
+        {name: name},
+        {contact_email: email}
+
+      ]
+    });
+
+    if(companyName){
+      throw new HttpException("Company name already registered", HttpStatus.FOUND)
+    }
+
+    return companyName;
   }
 }

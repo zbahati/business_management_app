@@ -23,5 +23,9 @@ export class Company {
 
     @UpdateDateColumn()
     updated_at: Timestamp
+
+    constructor(entity: Partial<Company>){
+        Object.assign(this, entity)
+    }
     
 }
