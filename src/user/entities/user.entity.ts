@@ -23,4 +23,8 @@ export class User {
 
     @UpdateDateColumn()
     updated_at: Timestamp
+
+    constructor(entity: Partial<User>){
+        Object.assign(this, entity)
+    }
 }
