@@ -5,6 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtContanst } from './company/constants';
+import { SubscriptionModule } from './subscription/subscription.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 
 @Module({
@@ -26,7 +28,8 @@ import { JwtContanst } from './company/constants';
       autoLoadEntities: true,
       synchronize: true      
     }),
-    UserModule, CompanyModule],
+    ScheduleModule.forRoot(),
+    UserModule, CompanyModule, SubscriptionModule],
   controllers: [],
   providers: [],
 })

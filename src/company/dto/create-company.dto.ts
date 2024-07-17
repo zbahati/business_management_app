@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { AccountStatus } from "../enum/status.enum";
 
 export class CreateCompanyDto {
     @IsNotEmpty({message: "Name shouldn't be empty"})
@@ -14,5 +15,5 @@ export class CreateCompanyDto {
     password: string
 
     @IsOptional()
-    account_status: string
+    account_status: AccountStatus[]
 }
