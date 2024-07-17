@@ -4,6 +4,7 @@ import { CreateCompanyDto } from './dto/create-company.dto';
 import { LoginCompanyDto } from './dto/login_company.dto';
 import {  Response } from 'express';
 import { CompanyGuard } from './company.guard';
+import { UserGuard } from 'src/user/user.guard';
 
 @Controller('company')
 export class CompanyController {
@@ -27,6 +28,7 @@ export class CompanyController {
     return this.companyService.companyLogout(response)
   }
 
+  @UseGuards(UserGuard)
   @Get()
   findAll() {
     return this.companyService.findAll();

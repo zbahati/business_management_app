@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt'
 import { LoginUserDto } from './dto/login-user.dto';
 import { Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import { UserGuard } from './user.guard';
 
 @Injectable()
 export class UserService {
@@ -52,7 +53,6 @@ export class UserService {
       email: user.email
     }
 
-
     const token = await this.jwtService.signAsync(payload);
     response.cookie("user_token", token)
 
@@ -61,9 +61,9 @@ export class UserService {
     };
 
   }
-
+ 
   async logout(response: Response){
-    response.clearCookie('user-token');
+    response.clearCookie('user_token');
     return {
       message: "User logged out successfully!."
     }

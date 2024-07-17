@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { Response } from 'express';
+import { UserGuard } from './user.guard';
 
 @Controller('user')
 export class UserController {
@@ -19,6 +20,7 @@ export class UserController {
     return this.userService.login(loginUserDto, response)
   }
 
+  @UseGuards(UserGuard)
   @Post('user-logout')
   logout(@Res({passthrough: true}) response:Response){
     return this.userService.logout(response);
