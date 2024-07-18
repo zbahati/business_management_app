@@ -4,6 +4,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { AuthGuard } from 'src/company/auth.guard';
 import { CompanyGuard } from 'src/company/company.guard';
+import { CompanyDecorator } from 'src/company/company.decorator';
 
 @UseGuards(CompanyGuard,AuthGuard)
 @Controller('product')
@@ -11,8 +12,8 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productService.create(createProductDto);
+  create(@Body() createProductDto: CreateProductDto, @CompanyDecorator() owner: number) {
+    return this.productService.create(createProductDto, owner);
   }
 
   @Get()

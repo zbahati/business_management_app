@@ -1,6 +1,7 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Timestamp, UpdateDateColumn } from "typeorm";
 import { AccountStatus } from "../enum/status.enum";
 import { Subscription } from "src/subscription/entities/subscription.entity";
+import { Product } from "src/product/entities/product.entity";
 
 @Entity()
 export class Company {
@@ -27,6 +28,9 @@ export class Company {
 
     @OneToMany(()=>Subscription, (sub)=> sub.company)
     subscriptions: Subscription[]
+
+    @OneToMany(()=> Product, (product)=> product.company)
+    products: Product[]
 
     constructor(entity: Partial<Company>){
         Object.assign(this, entity)
