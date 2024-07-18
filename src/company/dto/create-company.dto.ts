@@ -15,5 +15,5 @@ export class CreateCompanyDto {
     password: string
 
     @IsOptional()
-    account_status: AccountStatus[]
+    account_status: AccountStatus
 }

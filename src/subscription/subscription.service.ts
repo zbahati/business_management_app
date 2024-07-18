@@ -49,7 +49,7 @@ export class SubscriptionService {
     }
 
     const subscription = await this.subscriptionRepository.save(subsc);
-    company.account_status = [AccountStatus.ACTIVE]
+    company.account_status = AccountStatus.ACTIVE
 
     await this.companyRepository.save(company)
 
@@ -72,7 +72,7 @@ export class SubscriptionService {
       
       if(now > monthLater){
         const company = subscription.company;
-        company.account_status = [AccountStatus.PENDING];
+        company.account_status = AccountStatus.PENDING;
 
         await this.companyRepository.save(company)
       }

@@ -16,8 +16,8 @@ export class Company {
     @Column()
     password: string
 
-    @Column({type: 'enum', enum: AccountStatus, array: true, default: [AccountStatus.PENDING]})
-    account_status:AccountStatus[]
+    @Column({type: 'enum', enum: AccountStatus, default: AccountStatus.PENDING})
+    account_status:AccountStatus
 
     @CreateDateColumn()
     created_at: Timestamp
