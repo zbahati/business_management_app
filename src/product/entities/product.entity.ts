@@ -12,9 +12,6 @@ export class Product {
     @Column({default: ' '})
     description: string
 
-    @Column()
-    price: number
-
     @ManyToOne(()=> Company, (company) => company.products)
     company: Company
     

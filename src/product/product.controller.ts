@@ -35,4 +35,4 @@ export class ProductController {
   remove(@Param('id') id: string, @CompanyDecorator() owner: number) {
     return this.productService.remove(+id, owner);
   }
-}
+} 
