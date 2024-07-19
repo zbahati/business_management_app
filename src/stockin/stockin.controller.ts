@@ -1,8 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { StockinService } from './stockin.service';
 import { CreateStockinDto } from './dto/create-stockin.dto';
 import { UpdateStockinDto } from './dto/update-stockin.dto';
+import { CompanyGuard } from 'src/company/company.guard';
+import { AuthGuard } from 'src/company/auth.guard';
 
+@UseGuards(CompanyGuard, AuthGuard)
 @Controller('stockin')
 export class StockinController {
   constructor(private readonly stockinService: StockinService) {}
