@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Stockin } from './entities/stockin.entity';
 import { Repository } from 'typeorm';
 import { ProductService } from 'src/product/product.service';
+import { stockSummary } from './stockSummary.interface';
 
 @Injectable()
 export class StockinService {
@@ -30,7 +31,7 @@ export class StockinService {
     return stockIn;
   }
 
-  async findAllStockInSummary(owner: any) {
+  async findAllStockInSummary(owner: any): Promise<stockSummary[]> {
     const stockIns = await this.stockinRepository.find({
       where: {
         company: {
@@ -39,6 +40,7 @@ export class StockinService {
       },
       relations: ["company", "product"]
     })
+
 
     if(!stockIns){
       throw new NotFoundException("No Buying transaction you have made")
@@ -59,7 +61,7 @@ export class StockinService {
       prevData[product.id].total_price +=total_price;
 
       return prevData;
-    },{})
+    },{} as Record<number, stockSummary>)
 
     return Object.values(summary);
   }
