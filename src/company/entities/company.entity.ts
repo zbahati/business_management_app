@@ -2,6 +2,7 @@ import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Ti
 import { AccountStatus } from "../enum/status.enum";
 import { Subscription } from "src/subscription/entities/subscription.entity";
 import { Product } from "src/product/entities/product.entity";
+import { Stockin } from "src/stockin/entities/stockin.entity";
 
 @Entity()
 export class Company {
@@ -31,6 +32,9 @@ export class Company {
 
     @OneToMany(()=> Product, (product)=> product.company)
     products: Product[]
+
+    @OneToMany(()=> Stockin, (stockin)=> stockin.company)
+    stockin: Stockin[]
 
     constructor(entity: Partial<Company>){
         Object.assign(this, entity)

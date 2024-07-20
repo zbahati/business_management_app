@@ -8,6 +8,8 @@ import { JwtContanst } from './company/constants';
 import { SubscriptionModule } from './subscription/subscription.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ProductModule } from './product/product.module';
+import { StockinModule } from './stockin/stockin.module';
+import { StockoutModule } from './stockout/stockout.module';
 
 
 @Module({
@@ -30,7 +32,7 @@ import { ProductModule } from './product/product.module';
       synchronize: true      
     }),
     ScheduleModule.forRoot(),
-    UserModule, CompanyModule, SubscriptionModule, ProductModule],
+    UserModule, CompanyModule, SubscriptionModule, ProductModule, StockinModule, StockoutModule],
   controllers: [],
   providers: [],
 })
