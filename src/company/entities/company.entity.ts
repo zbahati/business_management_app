@@ -3,6 +3,7 @@ import { AccountStatus } from "../enum/status.enum";
 import { Subscription } from "src/subscription/entities/subscription.entity";
 import { Product } from "src/product/entities/product.entity";
 import { Stockin } from "src/stockin/entities/stockin.entity";
+import { Stockout } from "src/stockout/entities/stockout.entity";
 
 @Entity()
 export class Company {
@@ -35,6 +36,9 @@ export class Company {
 
     @OneToMany(()=> Stockin, (stockin)=> stockin.company)
     stockin: Stockin[]
+
+    @OneToMany(()=> Stockout, (stockout)=> stockout.company)
+    stockout: Stockout[]
 
     constructor(entity: Partial<Company>){
         Object.assign(this, entity)
