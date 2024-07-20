@@ -1,5 +1,4 @@
-import { IsNotEmpty, IsNumber, IsPositive } from "class-validator";
-import { Product } from "src/product/entities/product.entity";
+import { IsNotEmpty, IsNumber, IsOptional, IsPositive } from "class-validator";
 
 export class CreateStockinDto {
     @IsNotEmpty()
@@ -13,6 +12,11 @@ export class CreateStockinDto {
     price: number
 
     @IsNotEmpty()
-    product: Product
+    @IsNumber()
+    product: number
+
+    @IsOptional()
+    @IsNumber()
+    total_price: number
 
 }

@@ -9,6 +9,7 @@ import { SubscriptionModule } from './subscription/subscription.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ProductModule } from './product/product.module';
 import { StockinModule } from './stockin/stockin.module';
+import { StockoutModule } from './stockout/stockout.module';
 
 
 @Module({
@@ -31,7 +32,7 @@ import { StockinModule } from './stockin/stockin.module';
       synchronize: true      
     }),
     ScheduleModule.forRoot(),
-    UserModule, CompanyModule, SubscriptionModule, ProductModule, StockinModule],
+    UserModule, CompanyModule, SubscriptionModule, ProductModule, StockinModule, StockoutModule],
   controllers: [],
   providers: [],
 })
