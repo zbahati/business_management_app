@@ -56,6 +56,7 @@ export class StockinService {
           total_price: 0
         }
       }
+      
 
       prevData[product.id].total_quantity += quantity;
       prevData[product.id].total_price +=total_price;
