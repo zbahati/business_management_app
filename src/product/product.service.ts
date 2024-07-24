@@ -47,7 +47,9 @@ export class ProductService {
         company: {
           id: owner
         }
-      }
+        
+      },
+      relations: ["company","stockin", "stockout"]
     })
 
     if(!product){

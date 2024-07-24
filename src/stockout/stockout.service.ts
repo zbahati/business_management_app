@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { StockinService } from 'src/stockin/stockin.service';
 import { stockSummary } from 'src/stockin/stockSummary.interface';
 import { ProductService } from 'src/product/product.service';
+import { CompanyDecorator } from 'src/company/company.decorator';
 
 @Injectable()
 export class StockoutService {
@@ -86,20 +87,80 @@ export class StockoutService {
 
   }
   
+  async findAll(owner: any) {
+    const stockouts = await this.stockoutRepository.find({
+      where: {
+        company:{id: owner}
+      },
+      relations: ["product"]
+    })
+    if(!stockouts){
+      throw new NotFoundException("No sales transaction made.")
+    }
 
-  findAll() {
-    return `This action returns all stockout`;
+    return stockouts
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} stockout`;
+  async findOne(id: number, owner: any) {
+    const stockOutTransaction = await this.stockoutRepository.findOne({
+      where: {
+        id: id,
+        company: {
+          id: owner
+        }
+      },
+      
+      relations: ["product"]
+    })
+
+    if(!stockOutTransaction){
+      throw new NotFoundException(`sales transction with ID# ${id} not found.`)
+    }
+    
+    return stockOutTransaction;
   }
 
-  update(id: number, updateStockoutDto: UpdateStockoutDto) {
-    return `This action updates a #${id} stockout`;
-  }
+  async update(id: number, updateStockoutDto: UpdateStockoutDto, @CompanyDecorator() owner: number) {
+    const stockOutTransaction = await this.findOne(id, owner);
+    const product = await this.productService.findOne(updateStockoutDto.product??stockOutTransaction.product.id, owner);
 
-  remove(id: number) {
+    const productStockInSummary: stockSummary[] = await this.stockInService.findAllStockInSummary(owner);
+    const productStockOutSummary: stockSummary[] = await this.findStockOutSummary(owner);
+
+    const stockInSummary = productStockInSummary.find((productItem) => productItem.id === product.id);
+
+    if (!stockInSummary) {
+        throw new NotFoundException("No Purchases transactions found, Please add purchases.");
+    }
+
+    let availableStock = 0;
+    let total_price = stockOutTransaction.total_price;
+    const stockOutSummary = productStockOutSummary.find((productItem) => productItem.id === product.id);
+    if(!stockOutSummary){
+      throw new NotFoundException("No Sales transactions found, Please add sales.");
+    }else{
+      const currentStockOutQuantity = stockOutTransaction.quantity;
+      const newStockOutQuantity = updateStockoutDto.quantity?? stockOutTransaction.quantity;
+      const currentStockOutPrice =  updateStockoutDto.price?? stockOutTransaction.price;
+      availableStock = stockInSummary.total_quantity - (stockOutSummary.total_quantity - currentStockOutQuantity)
+      
+      if(newStockOutQuantity > availableStock){
+        throw new NotFoundException(`Insufficient stock quantity of ${availableStock} ${product.name}`)
+      }
+
+      total_price = newStockOutQuantity *  currentStockOutPrice
+    }
+
+    await this.stockoutRepository.update(id,{...updateStockoutDto, product: product, total_price: total_price});
+
+    const updatedStockProduct = this.findOne(id, owner)
+
+   return updatedStockProduct;
+
+}
+
+
+remove(id: number, owner: any) {
     return `This action removes a #${id} stockout`;
   }
 }

@@ -22,22 +22,22 @@ export class StockoutController {
   }
 
   @Get()
-  findAll() {
-    return this.stockoutService.findAll();
+  findAll(@CompanyDecorator() owner: number) {
+    return this.stockoutService.findAll(owner);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.stockoutService.findOne(+id);
+  findOne(@Param('id') id: string, @CompanyDecorator() owner: number) {
+    return this.stockoutService.findOne(+id, owner);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateStockoutDto: UpdateStockoutDto) {
-    return this.stockoutService.update(+id, updateStockoutDto);
+  update(@Param('id') id: string, @Body() updateStockoutDto: UpdateStockoutDto, @CompanyDecorator() owner: number) {
+    return this.stockoutService.update(+id, updateStockoutDto, owner);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.stockoutService.remove(+id);
+  remove(@Param('id') id: string, @CompanyDecorator() owner: number) {
+    return this.stockoutService.remove(+id, owner);
   }
 }
